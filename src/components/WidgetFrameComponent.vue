@@ -1,31 +1,18 @@
 <template>
-   <div class="widget">
-        <slot name="img"></slot>
-        <div class="widget__top">
-            <slot name="top"></slot>
-        </div>
-        <div class="widget__bottom">
-            <slot name="bottom"></slot>
-        </div>
-   </div>
-
-
-
-
-
-
+  <div class="widget">
+    <slot name="img"></slot>
+    <div class="widget__top">
+      <slot name="top"></slot>
+    </div>
+    <div class="widget__bottom">
+      <slot name="bottom"></slot>
+    </div>
+  </div>
 </template>
 
-
 <script>
-
-export default {
-       
-
-}
+export default {};
 </script>
-
-
 
 <style scoped>
 .widget {
@@ -37,7 +24,6 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: start;
-
 }
 .widget__top {
   border-radius: 16px 16px 0 0;
@@ -53,48 +39,48 @@ export default {
   padding: 30px 30px 25px 35px;
   background: #fff;
 }
-@media(max-width: 1199px) {
-    .widget__top {
-        padding: 64px 0 0 63px;
-    }
+@media (max-width: 1199px) {
+  .widget__top {
+    padding: 64px 0 0 63px;
+  }
 }
-@media(max-width: 987px) {
-    .widget {   
-      width: 410px;
-      height: 532px;
-    }
-    .widget__top {
-      padding: 44px 0 0 43px;
-    }
-    .widget__bottom {
-      padding: 15px 20px 15px 20px;
-    }
+@media (max-width: 987px) {
+  .widget {
+    width: 410px;
+    height: 532px;
+  }
+  .widget__top {
+    padding: 44px 0 0 43px;
+  }
+  .widget__bottom {
+    padding: 15px 20px 15px 20px;
+  }
 }
-@media(max-width: 767px) {
-    .widget {
-      width: 370px;
-      height: 482px;
-    }
-    .widget__top {
-      padding: 35px 0 0 33px;
-    }
+@media (max-width: 767px) {
+  .widget {
+    width: 370px;
+    height: 482px;
+  }
+  .widget__top {
+    padding: 35px 0 0 33px;
+  }
 }
-@media(max-width: 575px) {
-    .widget {
-      width: 310px;
-      height: 432px;
-    }
+@media (max-width: 575px) {
+  .widget {
+    width: 310px;
+    height: 432px;
+  }
 }
-@media(max-width: 459px) {
-    .widget {
-      width: 243px;
-      height: 332px;
-    }
-    .widget__top {
-      padding: 24px 0 0 23px;
-    }
-    .widget__bottom {
-      padding: 16px 20px 17px 16px;
-    }
+@media (max-width: 459px) {
+  .widget {
+    width: 243px;
+    height: 332px;
+  }
+  .widget__top {
+    padding: 24px 0 0 23px;
+  }
+  .widget__bottom {
+    padding: 16px 20px 17px 16px;
+  }
 }
 </style>
