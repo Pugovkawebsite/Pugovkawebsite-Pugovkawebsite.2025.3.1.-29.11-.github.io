@@ -46,7 +46,7 @@ export default function getCoords() {
     };
     const fetchingPlace = async () => {
         try {                
-            const geo = await axios.get(`http://api.openweathermap.org/geo/1.0/reverse?lat=${lat.value}&lon=${lon.value}&limit=5&appid=${API_KEY}`);
+            const geo = await axios.get(`https://api.openweathermap.org/geo/1.0/reverse?lat=${lat.value}&lon=${lon.value}&limit=5&appid=${API_KEY}`);
             place.value = geo.data[0].name;     
             
         } catch (e) {
