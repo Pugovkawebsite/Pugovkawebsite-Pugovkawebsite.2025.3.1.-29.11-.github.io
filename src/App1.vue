@@ -1,51 +1,100 @@
 <script>
+import axios from 'axios';
+import dayjs from 'dayjs';
+import timezone from 'dayjs/plugin/timezone';
+import utc from 'dayjs/plugin/utc';
 import WidgetFrameComponent from './components/WidgetFrameComponent.vue';
-import getCoords from "./hooks/getCoords.js";
-import fetchDay from "./hooks/fetchDay.js";
 
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 export default {
   components: {
     WidgetFrameComponent,
   },
-       
-  setup() {
-    const {lat, lon, fetchingCoords, place, temperatureMax, temperatureMin, description, icon, temperature, message, isLoading} = getCoords();
-    const {day} = fetchDay();
-    
-    
+  data() {
     return {
-        isLoading,
-        lat,
-        lon,
-        fetchingCoords,
-        place,
-        temperatureMax, 
-        temperatureMin, 
-        description,
-        icon, 
-        temperature,
-        day,
-        message,
-        
+      lat: '44.34',
+      lon: '10.99',
+      day: '',
+      description: '',
+      temperature: '21',
+      temperatureMin: '21',
+      temperatureMax: '21',
+      icon: '',
+      place: '',
+    };
+  },
+  methods: {
+    getUserGeo() {
+      
+        navigator.geolocation.getCurrentPosition((position) => {
+          if (position.coords) {
+            this.lat = position.coords.latitude;
+            this.lon = position.coords.longitude;
+            console.log(this.lat, this.lon);
+            this.fetchWeather();
+            this.fetchPlace();
+          }
+        });
+      
+    },
+    async fetchWeather() {
+      try {
+        const string = `https://api.openweathermap.org/data/2.5/weather?lat=${this.lat}&lon=${this.lon}&units=metric&appid=67eeefab3125389a4981798cada12be7`;
+        console.log(string);
+        const response = await axios.get(string);
+        console.log(response);
+        this.temperatureMax = Math.round(response.data.main.temp_max) + '°';
+        this.temperatureMin = Math.round(response.data.main.temp_min) + '°';
+        this.description = response.data.weather[0].description;
+        console.log(this.description);
+        this.icon =
+          'https://openweathermap.org/img/wn/' +
+          response.data.weather[0].icon +
+          '@2x.png';
+        console.log(this.icon);
+        this.temperature = Math.round(response.data.main.temp); //температура на главный экран //
+      } catch (e) {
+        alert('Ошибка. Данные о погоде не получены');
+      }
+    },
 
-    }
-  }
+    async fetchPlace() {
+      try {
+        const geo = await axios.get(
+          `http://api.openweathermap.org/geo/1.0/reverse?lat=${this.lat}&lon=${this.lon}&limit=5&appid=67eeefab3125389a4981798cada12be7`,
+        );
+        console.log(geo);
+        this.place = geo.data[0].name;
+        console.log(this.place);
+      } catch (e) {
+        alert('Ошибка. Город не определен');
+      }
+    },
+    async fetchDay() {
+      try {
+        const customDayjs = dayjs().tz(dayjs.tz.guess());
+        this.day = customDayjs.format('dddd, DD MMMM');
+        console.log(this.day);
+      } catch (e) {
+        alert('Ошибка. Часовой пояс пользователя не определен');
+      }
+    },
+  },
+  mounted() {
+    this.getUserGeo();
+    this.fetchDay();
+  },
 };
 </script>
 
 <template>
-
-<div class="widget__error" v-if="message">{{message}}</div>
-  <widget-frame-component >
-  
+  <widget-frame-component>
     <template #img>
-    
       <img class="widget__img_main" src="./img/widget_1.jpg" />
-      
     </template>
-    <template #top v-if="!message">
-        
+    <template #top>
       <div
         v-if="temperature <= 0"
         class="widget__gradient widget__gradient_dark-blue"
@@ -65,35 +114,31 @@ export default {
 
       <div class="widget__temperatura">
         <span>{{ temperature }}°</span>
-        
       </div>
       <div class="widget__place">{{ place }}</div>
-      <div class="widget__loading" v-if="isLoading">Идет загрузка...</div>
     </template>
     <template #bottom>
       <h3 class="widget__day">{{ day }}</h3>
-      <div class="widget__weather" v-if="!message">
+      <div class="widget__weather">
         <div
-          
+          v-if="
+            temperatureMin == temperatureMax
+              ? (temperatureMax = ' ')
+              : (temperatureMax = temperatureMax)
+          "
           class="widget__weather__description"
         >
-          {{ description }}<br /><div
-            >{{ temperatureMin }} <span v-if="temperatureMax!=temperatureMin">/ {{ temperatureMax }}</span></div
+          {{ description }}<br /><span
+            >{{ temperatureMin }} / {{ temperatureMax }}</span
           >
         </div>
         <img class="widget__weather__icon" :src="icon" />
       </div>
     </template>
   </widget-frame-component>
-  
 </template>
 
 <style scoped>
-.widget__error {
-    margin-bottom: 25px;
-    color: #db81c5;
-    text-align: center;
-}
 .widget__gradient_yellow {
   background-image: radial-gradient(circle, #dec27b, #f8b70f);
 }
@@ -146,11 +191,6 @@ export default {
   width: 100%;
   height: 100%;
   border-radius: 16px 16px 16px 16px;
-}
-.widget__loading {
-    color: white;
-    margin-top: 15px;
-    font-size: 20px;
 }
 .widget__temperatura {
   position: relative;
@@ -243,9 +283,6 @@ export default {
   .widget__place {
     font-weight: 700;
     font-size: 15px;
-  }
-  .widget__error {
-    font-size: 14px;
   }
 }
 </style>
