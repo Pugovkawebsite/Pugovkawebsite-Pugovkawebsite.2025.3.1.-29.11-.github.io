@@ -15,20 +15,13 @@ export default function getCoords() {
     const temperature = ref('')
     const message = ref('')
    
-    const fetchingCoords = async () => {
-    
-    
-    
+    const fetchingCoords = async () => {    
     function successGeo(position) {
-        if (position.coords) {
-            
+        if (position.coords) {            
             lat.value = position.coords.latitude;
             lon.value = position.coords.longitude;
-            console.log(lat.value, lon.value);
             fetchingPlace();
-            fetchingWeather();
-            
-            
+            fetchingWeather();           
         }
     }
     function errorGeo(error) {
@@ -44,8 +37,6 @@ export default function getCoords() {
                 message.value = "Произошла неизвестная ошибка..";
             break;
         }
-        
-        console.log(message);
     }
     
     
@@ -56,8 +47,7 @@ export default function getCoords() {
     const fetchingPlace = async () => {
         try {                
             const geo = await axios.get(`http://api.openweathermap.org/geo/1.0/reverse?lat=${lat.value}&lon=${lon.value}&limit=5&appid=${API_KEY}`);
-            place.value = geo.data[0].name;
-            console.log(place.value);      
+            place.value = geo.data[0].name;     
             
         } catch (e) {
             alert('Ошибка. Город не определен');
@@ -66,13 +56,11 @@ export default function getCoords() {
     const fetchingWeather = async () => {
         try {
             const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${lat.value}&lon=${lon.value}&units=metric&appid=${API_KEY}`);
-            console.log(response);
             temperatureMax.value = Math.round(response.data.main.temp_max) + '°';
             temperatureMin.value = Math.round(response.data.main.temp_min) + '°';
             description.value = response.data.weather[0].description;
             icon.value = 'https://openweathermap.org/img/wn/' + response.data.weather[0].icon + '@2x.png';
             temperature.value = Math.round(response.data.main.temp);
-            console.log(temperature);
         } catch (e) {
             alert('Ошибка. Данные о погоде не получены');
         }

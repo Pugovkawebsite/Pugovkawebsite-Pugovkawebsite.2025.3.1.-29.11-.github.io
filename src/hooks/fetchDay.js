@@ -12,7 +12,6 @@ export default function fetchDay() {
         try {
             const customDayjs = dayjs().tz(dayjs.tz.guess());
             day.value = customDayjs.format('dddd, DD MMMM');
-            console.log(day.value);
         } catch (e) {
             alert('Ошибка. Часовой пояс пользователя не определен');
         }
