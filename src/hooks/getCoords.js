@@ -1,7 +1,6 @@
 import {ref, onMounted} from 'vue';
 import axios from "axios";
 
-
 export default function getCoords() {
     const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
     const isLoading = ref(true)
@@ -25,30 +24,28 @@ export default function getCoords() {
         }
     }
     function errorGeo(error) {
-
-        switch (error.value) {
-            case error.PERMISSION_DENIED, error.TIMEOUT:
+        switch (error.code) {
+            case error.PERMISSION_DENIED:
                 message.value = "Пользователь отклонил запрос на определение местоположения.";
             break;
             case error.POSITION_UNAVAILABLE:
                 message.value = "Информация о местоположении недоступна.";
             break;
-            case error.UNKNOWN_ERROR:
-                message.value = "Произошла неизвестная ошибка..";
+            case error.TIMEOUT:
+                message.value = "Время ожидания истекло.";
             break;
+            default:
+                message.value = "Произошла неизвестная ошибка..";
+            break;            
         }
-    }
-    
-    
+    }        
     navigator.geolocation.getCurrentPosition(successGeo, errorGeo);
-    isLoading.value = false;
-    
+    isLoading.value = false;    
     };
     const fetchingPlace = async () => {
         try {                
             const geo = await axios.get(`https://api.openweathermap.org/geo/1.0/reverse?lat=${lat.value}&lon=${lon.value}&limit=5&appid=${API_KEY}`);
-            place.value = geo.data[0].name;     
-            
+            place.value = geo.data[0].name;               
         } catch (e) {
             alert('Ошибка. Город не определен');
         }
@@ -67,7 +64,6 @@ export default function getCoords() {
     }
     onMounted(fetchingCoords)
     return {
-    isLoading, lat, lon, fetchingCoords, place, temperatureMax, temperatureMin, description, icon, temperature, message
+    isLoading, lat, lon, place, temperatureMax, temperatureMin, description, icon, temperature, message
     }
-
 };

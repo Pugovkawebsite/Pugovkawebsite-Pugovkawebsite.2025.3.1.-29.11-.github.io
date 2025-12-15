@@ -7,13 +7,10 @@ import fetchDay from "./hooks/fetchDay.js";
 export default {
   components: {
     WidgetFrameComponent,
-  },
-       
+  },    
   setup() {
     const {lat, lon, fetchingCoords, place, temperatureMax, temperatureMin, description, icon, temperature, message, isLoading} = getCoords();
-    const {day} = fetchDay();
-    
-    
+    const {day} = fetchDay();    
     return {
         isLoading,
         lat,
@@ -27,8 +24,6 @@ export default {
         temperature,
         day,
         message,
-        
-
     }
   }
 };
@@ -37,15 +32,11 @@ export default {
 <template>
 
 <div class="widget__error" v-if="message">{{message}}</div>
-  <widget-frame-component >
-  
-    <template #img>
-    
-      <img class="widget__img_main" src="./img/widget_1.jpg" />
-      
+  <widget-frame-component > 
+    <template #img>   
+      <img class="widget__img_main" src="./img/widget_1.jpg" />      
     </template>
-    <template #top v-if="!message">
-        
+    <template #top v-if="!message">        
       <div
         v-if="temperature <= 0"
         class="widget__gradient widget__gradient_dark-blue"
@@ -62,10 +53,8 @@ export default {
         v-else-if="temperature > 20"
         class="widget__gradient widget__gradient_red"
       ></div>
-
       <div class="widget__temperatura">
-        <span>{{ temperature }}°</span>
-        
+        <span>{{ temperature }}°</span>        
       </div>
       <div class="widget__place">{{ place }}</div>
       <div class="widget__loading" v-if="isLoading">Идет загрузка...</div>
@@ -73,19 +62,14 @@ export default {
     <template #bottom>
       <h3 class="widget__day">{{ day }}</h3>
       <div class="widget__weather" v-if="!message">
-        <div
-          
-          class="widget__weather__description"
-        >
+        <div class="widget__weather__description">
           {{ description }}<br /><div
-            >{{ temperatureMin }} <span v-if="temperatureMax!=temperatureMin">/ {{ temperatureMax }}</span></div
-          >
+            >{{ temperatureMin }} <span v-if="temperatureMax!=temperatureMin">/ {{ temperatureMax }}</span></div>
         </div>
         <img class="widget__weather__icon" :src="icon" />
       </div>
     </template>
   </widget-frame-component>
-  
 </template>
 
 <style scoped>

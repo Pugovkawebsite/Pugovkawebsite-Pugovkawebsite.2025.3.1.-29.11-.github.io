@@ -2,10 +2,8 @@ import {ref, onMounted} from 'vue';
 import dayjs from 'dayjs';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
-
 dayjs.extend(utc);
 dayjs.extend(timezone);
-
 export default function fetchDay() {
     const day = ref('')
     const fetchingDay = async () => {
@@ -20,5 +18,4 @@ export default function fetchDay() {
     return {
       day
     }
-
 };
